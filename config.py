@@ -14,11 +14,8 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 GETONBOARD_BASE_URL = "https://www.getonbrd.com/api/v0"
 GETONBOARD_PER_PAGE = 120
 
-CHILETRABAJOS_RSS_URL = "https://www.chiletrabajos.cl/rss.xml"
-CHILETRABAJOS_BASE_URL = "https://www.chiletrabajos.cl"
-
-BNE_BASE_URL = "https://www.bne.gob.cl"
-BNE_SITEMAP_URL = "https://www.bne.gob.cl/sitemap.xml"
+REMOTIVE_API_URL = "https://remotive.com/api/remote-jobs"
+REMOTEOK_API_URL = "https://remoteok.com/api"
 
 # Opciones de control del orquestador
 CHECKPOINT_EVERY = 100               # Cada cuántas ofertas guardar checkpoint

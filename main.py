@@ -9,11 +9,11 @@ from storage.json_storage import JSONStorage
 from extractors.getonboard import GetOnBoardExtractor
 from parsers.getonboard_parser import GetOnBoardParser
 
-from extractors.chiletrabajos import ChiletrabajosExtractor
-from parsers.chiletrabajos_parser import ChiletrabajosParser
+from extractors.remotive import RemotiveExtractor
+from parsers.remotive_parser import RemotiveParser
 
-from extractors.bne import BNEExtractor
-from parsers.bne_parser import BNEParser
+from extractors.remoteok import RemoteOkExtractor
+from parsers.remoteok_parser import RemoteOkParser
 
 def setup_logger():
     logger = logging.getLogger()
@@ -29,12 +29,12 @@ def setup_logger():
     # Podría sumarse un FileHandler aquí a choice
 
 def main():
-    parser = argparse.ArgumentParser(description="Job Extractor Pipeline LatAm")
-    parser.add_argument("--fuentes", nargs="+", choices=["getonboard", "chiletrabajos", "bne", "all"], default=["all"], help="Fuentes a extraer")
+    parser = argparse.ArgumentParser(description="Job Extractor Pipeline Global Tech")
+    parser.add_argument("--fuentes", nargs="+", choices=["getonboard", "remotive", "remoteok", "all"], default=["all"], help="Fuentes a extraer")
     parser.add_argument("--max-hours", type=float, default=MAX_HOURS_PER_SOURCE, help="Tiempo máximo por fuente en horas")
     parser.add_argument("--max-total-hours", type=float, default=MAX_HOURS_TOTAL, help="Tiempo máximo global en horas")
     parser.add_argument("--max-items", type=int, default=None, help="Límite máximo de ofertas por fuente (útil para pruebas)")
-    parser.add_argument("--resume", action="store_true", help="Reanudar extracciones usando los checkpoints persistentes (para BNE y Chiletrabajos)")
+    parser.add_argument("--resume", action="store_true", help="Reanudar extracciones usando descargas previas (si la fuente lo soporta)")
     
     args = parser.parse_args()
     setup_logger()
@@ -44,7 +44,7 @@ def main():
     
     sources_to_run = args.fuentes
     if "all" in sources_to_run:
-        sources_to_run = ["getonboard", "chiletrabajos", "bne"]
+        sources_to_run = ["getonboard", "remotive", "remoteok"]
         
     logger.info(f"Iniciando pipeline para: {', '.join(sources_to_run)}")
     logger.info(f"Opciones: max_hours={args.max_hours}, max_items={args.max_items}, resume={args.resume}")
@@ -53,15 +53,15 @@ def main():
     
     pipeline_config = {
         "getonboard": (GetOnBoardExtractor, GetOnBoardParser),
-        "chiletrabajos": (ChiletrabajosExtractor, ChiletrabajosParser),
-        "bne": (BNEExtractor, BNEParser)
+        "remotive": (RemotiveExtractor, RemotiveParser),
+        "remoteok": (RemoteOkExtractor, RemoteOkParser)
     }
 
     results_summary = {}
     ordered_sources = []
     
-    # Priority enforcement: GetOnBoard -> Chiletrabajos -> BNE
-    ordered_preferences = ["getonboard", "chiletrabajos", "bne"]
+    # Priority enforcement: GetOnBoard -> Remotive -> RemoteOK
+    ordered_preferences = ["getonboard", "remotive", "remoteok"]
     for src in ordered_preferences:
         if src in sources_to_run:
              ordered_sources.append(src)
